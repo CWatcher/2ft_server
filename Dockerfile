@@ -6,7 +6,7 @@
 #    By: CWatcher <cwatcher@student.21-school.ru>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/19 19:26:03 by CWatcher          #+#    #+#              #
-#    Updated: 2021/02/22 19:06:18 by CWatcher         ###   ########.fr        #
+#    Updated: 2021/02/23 16:17:02 by CWatcher         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,8 +42,8 @@ COPY srcs/info.php /var/www/html
 #	-keyout localhost.key -out localhost.crt -subj "/C=RU/L=Moscow/O=21 School/CN=localhost"
 #COPY srcs/localhost.conf /etc/nginx/conf.d/
 #COPY srcs/tst.conf /etc/nginx/conf.d/
-#ENTRYPOINT service mysql start && service php7.3-fpm start && nginx -g "daemon off;"
-ENTRYPOINT service php7.3-fpm start && nginx -g "daemon off;"
+ENTRYPOINT service mysql start && service php7.3-fpm start && nginx -g "daemon off;"
+#ENTRYPOINT service php7.3-fpm start && nginx -g "daemon off;"
 #CMD nginx -g "daemon off;"
 EXPOSE 80 443
 
