@@ -6,7 +6,7 @@
 #    By: CWatcher <cwatcher@student.21-school.ru>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/19 19:26:03 by CWatcher          #+#    #+#              #
-#    Updated: 2021/02/23 19:43:30 by CWatcher         ###   ########.fr        #
+#    Updated: 2021/02/23 19:58:02 by CWatcher         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,8 @@ RUN apt install -y php
 RUN apt install -y vim
 RUN apt install -y procps
 RUN apt install -y man
-RUN apt install -y tldr
+RUN apt install -y manpages
+RUN apt install -y tldr && tldr tldr
 RUN apt install -y mc
 COPY srcs/.bashrc /root/
 COPY srcs/.bash_aliases /root/
