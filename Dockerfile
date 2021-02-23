@@ -6,7 +6,7 @@
 #    By: CWatcher <cwatcher@student.21-school.ru>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/19 19:26:03 by CWatcher          #+#    #+#              #
-#    Updated: 2021/02/23 17:39:55 by CWatcher         ###   ########.fr        #
+#    Updated: 2021/02/23 19:43:30 by CWatcher         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,9 +33,15 @@ RUN echo 'deb http://deb.debian.org/debian buster-backports main' >> /etc/apt/so
 RUN apt update
 RUN apt install -y php-twig/buster-backports
 RUN export DEBIAN_FRONTEND=noninteractive && apt install -y phpmyadmin
-#RUN apt install -y wordpress
-#RUN ln -s /usr/share/wordpress /var/www/html/wp
+RUN apt install -y wordpress
+RUN ln -s /usr/share/wordpress /var/www/html/wp
+RUN ln -s /usr/share/phpmyadmin/ /var/www/html/pma
+RUN ln -s /usr/share/doc/ /var/www/html/doc
 COPY srcs/info.php /var/www/html
+COPY srcs/autoindex*.conf /etc/nginx/snippets/
+RUN ln -s autoindex-on.conf autoindex.conf
+COPY /cntr/srcs/autoindex*.sh /usr/local/sbin
+RUN chmod +x /usr/local/sbin/autoindex*.sh
 
 #WORKDIR /etc/nginx/ssl
 #RUN openssl req -x509 -nodes -days 36524 -newkey rsa:2048 \
