@@ -6,7 +6,7 @@
 #    By: CWatcher <cwatcher@student.21-school.ru>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/19 19:26:03 by CWatcher          #+#    #+#              #
-#    Updated: 2021/02/23 19:58:02 by CWatcher         ###   ########.fr        #
+#    Updated: 2021/02/24 15:36:57 by CWatcher         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,14 +36,20 @@ RUN apt install -y php-twig/buster-backports
 RUN export DEBIAN_FRONTEND=noninteractive && apt install -y phpmyadmin
 RUN apt install -y wordpress
 RUN ln -s /usr/share/wordpress /var/www/html/wp
-RUN ln -s /usr/share/phpmyadmin/ /var/www/html/pma
+RUN ln -s /usr/share/phpmyadmin /var/www/html/pma
 RUN ln -s /usr/share/doc/ /var/www/html/doc
 COPY srcs/info.php /var/www/html
-COPY srcs/autoindex*.conf /etc/nginx/snippets/
-RUN ln -s autoindex-on.conf autoindex.conf
-COPY /cntr/srcs/autoindex*.sh /usr/local/sbin
-RUN chmod +x /usr/local/sbin/autoindex*.sh
 
+# autoindex
+WORKDIR /etc/nginx/snippets
+COPY srcs/autoindex*.conf .
+RUN ln -s autoindex-on.conf autoindex.conf
+WORKDIR /usr/local/sbin
+COPY srcs/autoindex*.sh .
+RUN chmod +x autoindex*.sh
+WORKDIR /
+
+COPY /srcs/config-db.php /etc/phpmyadmin/
 #WORKDIR /etc/nginx/ssl
 #RUN openssl req -x509 -nodes -days 36524 -newkey rsa:2048 \
 #	-keyout localhost.key -out localhost.crt -subj "/C=RU/L=Moscow/O=21 School/CN=localhost"
