@@ -1,0 +1,1 @@
+../../../phpmyadmin/sql/create_tables.sql
