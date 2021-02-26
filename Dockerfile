@@ -6,7 +6,7 @@
 #    By: CWatcher <cwatcher@student.21-school.ru>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/19 19:26:03 by CWatcher          #+#    #+#              #
-#    Updated: 2021/02/24 15:36:57 by CWatcher         ###   ########.fr        #
+#    Updated: 2021/02/26 20:09:41 by CWatcher         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,7 +49,12 @@ COPY srcs/autoindex*.sh .
 RUN chmod +x autoindex*.sh
 WORKDIR /
 
-COPY /srcs/config-db.php /etc/phpmyadmin/
+COPY srcs/config.inc.php /etc/phpmyadmin/
+RUN service mysql start && \
+	mysql -e "CREATE USER pma@localhost IDENTIFIED BY 'ft';" && \
+	mysql -e "GRANT ALL PRIVILEGES ON *.* TO pma@localhost"
+#	mysql -e "FLUSH PRIVILEGES"
+#COPY /srcs/config-db.php /etc/phpmyadmin/
 #WORKDIR /etc/nginx/ssl
 #RUN openssl req -x509 -nodes -days 36524 -newkey rsa:2048 \
 #	-keyout localhost.key -out localhost.crt -subj "/C=RU/L=Moscow/O=21 School/CN=localhost"
