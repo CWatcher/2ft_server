@@ -6,7 +6,7 @@
 #    By: CWatcher <cwatcher@student.21-school.ru>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/19 19:26:03 by CWatcher          #+#    #+#              #
-#    Updated: 2021/02/27 17:39:23 by CWatcher         ###   ########.fr        #
+#    Updated: 2021/02/27 18:03:31 by CWatcher         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,26 +32,26 @@ RUN apt install -y man
 RUN apt install -y manpages
 RUN apt install -y tldr && tldr tldr
 RUN apt install -y mc
-COPY srcs/info.php /var/www/html
+COPY srcs/var/www/html/info.php /var/www/html
 RUN ln -s /usr/share/doc/ /var/www/html/doc
-COPY srcs/.bashrc /root/
-COPY srcs/.bash_aliases /root/
+COPY srcs/root/.bashrc /root/
+COPY srcs/root/.bash_aliases /root/
 
 # Nginx
-COPY srcs/default.conf /etc/nginx/sites-available/default
-COPY srcs/autoindex*.conf /etc/nginx/snippets/
-WORKDIR /usr/local/sbin
-COPY srcs/*autoindex*.sh .
+COPY srcs/etc/nginx/sites-available/default.conf /etc/nginx/sites-available/default
+COPY srcs/etc/nginx/snippets/autoindex*.conf /etc/nginx/snippets/
+WORKDIR /usr/local/sbin/
+COPY srcs/usr/local/sbin/*autoindex*.sh .
 RUN chmod +x *autoindex*.sh
-WORKDIR /
 #WORKDIR /etc/nginx/ssl
 #RUN openssl req -x509 -nodes -days 36524 -newkey rsa:2048 \
 #	-keyout localhost.key -out localhost.crt -subj "/C=RU/L=Moscow/O=21 School/CN=localhost"
+WORKDIR /
 
 # phpMyAdmin
 RUN ln -s /usr/share/phpmyadmin /var/www/html/pma
 #COPY /srcs/config-db.php /etc/phpmyadmin/
-COPY srcs/config.inc.php /etc/phpmyadmin/
+COPY srcs/etc/phpmyadmin/config.inc.php /etc/phpmyadmin/
 RUN service mysql start && \
 	mysql -e "CREATE USER pma@localhost IDENTIFIED BY 'ft';" && \
 	mysql -e "GRANT ALL PRIVILEGES ON *.* TO pma@localhost"
@@ -59,7 +59,7 @@ RUN service mysql start && \
 
 # Wordpress
 RUN ln -s /usr/share/wordpress /var/www/html/wp
-COPY srcs/config-localhost.php /etc/wordpress/
+COPY srcs/etc/wordpress/config-localhost.php /etc/wordpress/
 RUN service mysql start && \
 	mysql -e "CREATE USER wp@localhost IDENTIFIED BY 'ft'" && \
 	mysql -e "GRANT ALL PRIVILEGES ON wp.* TO wp@localhost" && \
