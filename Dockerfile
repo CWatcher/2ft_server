@@ -6,7 +6,7 @@
 #    By: CWatcher <cwatcher@student.21-school.ru>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/19 19:26:03 by CWatcher          #+#    #+#              #
-#    Updated: 2021/02/27 13:27:13 by CWatcher         ###   ########.fr        #
+#    Updated: 2021/02/27 16:13:30 by CWatcher         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,10 +43,9 @@ COPY srcs/info.php /var/www/html
 # autoindex
 WORKDIR /etc/nginx/snippets
 COPY srcs/autoindex*.conf .
-RUN ln -s autoindex-on.conf autoindex.conf
 WORKDIR /usr/local/sbin
-COPY srcs/autoindex*.sh .
-RUN chmod +x autoindex*.sh
+COPY srcs/*autoindex*.sh .
+RUN chmod +x *autoindex*.sh
 WORKDIR /
 
 COPY srcs/config.inc.php /etc/phpmyadmin/
@@ -65,7 +64,8 @@ RUN service mysql start && \
 #	-keyout localhost.key -out localhost.crt -subj "/C=RU/L=Moscow/O=21 School/CN=localhost"
 #COPY srcs/localhost.conf /etc/nginx/conf.d/
 #COPY srcs/tst.conf /etc/nginx/conf.d/
-CMD service mysql start && service php7.3-fpm start && nginx -g "daemon off;"
+ENV AUTOINDEX=on
+CMD set_autoindex.sh && service mysql start && service php7.3-fpm start && nginx -g "daemon off;"
 #ENTRYPOINT service php7.3-fpm start && nginx -g "daemon off;"
 #CMD nginx -g "daemon off;"
 EXPOSE 80 443
