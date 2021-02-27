@@ -6,7 +6,7 @@
 #    By: CWatcher <cwatcher@student.21-school.ru>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/19 19:26:03 by CWatcher          #+#    #+#              #
-#    Updated: 2021/02/26 20:09:41 by CWatcher         ###   ########.fr        #
+#    Updated: 2021/02/27 13:27:13 by CWatcher         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,7 +53,12 @@ COPY srcs/config.inc.php /etc/phpmyadmin/
 RUN service mysql start && \
 	mysql -e "CREATE USER pma@localhost IDENTIFIED BY 'ft';" && \
 	mysql -e "GRANT ALL PRIVILEGES ON *.* TO pma@localhost"
-#	mysql -e "FLUSH PRIVILEGES"
+##	mysql -e "FLUSH PRIVILEGES"
+COPY srcs/config-localhost.php /etc/wordpress/
+RUN service mysql start && \
+	mysql -e "CREATE USER wp@localhost IDENTIFIED BY 'ft'" && \
+	mysql -e "GRANT ALL PRIVILEGES ON wp.* TO wp@localhost" && \
+	mysql -e "CREATE DATABASE wp"
 #COPY /srcs/config-db.php /etc/phpmyadmin/
 #WORKDIR /etc/nginx/ssl
 #RUN openssl req -x509 -nodes -days 36524 -newkey rsa:2048 \
