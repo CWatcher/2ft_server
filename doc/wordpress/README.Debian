@@ -1,0 +1,109 @@
+#### Quick setup
+
+Setup apache to point to /usr/share/wordpress. See the examples/apache.conf
+
+Database and filesystem setup can be done with the help of a script in
+examples/setup-mysql. 
+
+#### WordPress configuration file
+
+The Debian package installs a wp-config.php script that will
+try to load the real configuration from /etc/wordpress/config-$HOST.php
+or /etc/wordpress/config-$DOMAIN.php (if the URL is "http://blog.example.com",
+$HOST will be "blog.example.com" and $DOMAIN will be "example.com").
+
+These files have the database password in them so some care should be
+taken with the permissions. The file only needs to be readable by
+www-data to work.
+
+If none of those files exist, it will try /etc/wordpress/config-default.php.
+Failing that, it will return an error 404.
+
+This was initially developed to host multiple blogs on the same server
+but since then, WordPress has grown a "multisite" feature of its own.
+
+If you want to learn more about those configuration files, you should
+check /usr/share/wordpress/wp-config-sample.php and
+http://codex.wordpress.org/Editing_wp-config.php
+
+#### Default themes and external servers
+
+The themes shipped with Debian packages called wordpress-theme-twenty*
+require to be able to download font and style sheets from external
+Content Delivery Networks (CDNs) such as googleapis. This may or may
+not be a problem but it may leak information about people visiting
+your website.
+
+For most people, this is fine. However if it is a problem for you, 
+choose a theme that doesn't use external resources or try using a
+plugin such as disable-google-fonts.
+
+#### Managing plugins, themes and uploaded files
+
+To respect the FHS and to let you add supplementary plugins and themes,
+the default configuration sets WP_CONTENT_DIR to
+/var/lib/wordpress/wp-content. This implies that your Apache configuration
+should override the default wp-content directory (within the DocumentRoot)
+with this directory. You can do this with an alias directive:
+Alias /wp-content /var/lib/wordpress/wp-content
+
+The subdirectories "uploads" and "blogs.dir" should be owned by www-data
+by default. This ensures that you can upload media files from within
+WordPress.
+
+The subdirectories "themes" and "plugins" are where you can drop
+non-packaged themes and plugins.
+
+Note that if you want WordPress to be able to edit themes and to update
+plugins, you have to ensure that all the themes and plugins are owned
+by the webserver user (www-data). This is easy to do for the themes
+and plugins that you have installed in /var/lib/wordpress/wp-content/:
+$ sudo chown -R www-data /var/lib/wordpress/wp-content
+
+But the default themes and plugins (installed in
+/usr/share/wordpress/wp-content/) are owned by the root user. If you want
+those to be editable, you should remove the corresponding symlink in
+/var/lib/wordpress/wp-content/ and put there a full copy of the default
+themes and plugins. Then you should re-run the previous chown command.
+
+If despite all this, you can't get the plugin upgrade feature to work, you
+can try to add the following parameter to your configuration file:
+define( 'FS_METHOD', 'direct' );
+
+#### Hosting multiple blogs
+
+## With WordPress multisite
+
+With WordPress multisite, you have a single instance of WordPress
+(one database, one configuration file) that is able to manage multiple
+blogs.
+
+It is thus recommended to put your WordPress configuration in
+/etc/wordpress/config-default.php. Then you should enable the
+"Multisite" feature in the web interface directly through
+Administration > Tools > Network Setup.
+
+More information:
+http://codex.wordpress.org/Create_A_Network
+
+Note that the default configuration of the Debian package already includes
+WP_ALLOW_MULTISITE set to true.
+
+## With separate configurations
+
+If you don't want to use the multisite feature, you can create
+multiple configuration files corresponding to your various blogs.
+Each configuration file can point to a dedicated MySQL database (or
+they can share the same database but then they must use different
+$table_prefix to ensure that they use different tables within
+the same database).
+
+#### Upgrading to a new Wordpress version
+
+The package upgrade doesn't automatically update the Wordpress database,
+you have to login to the administration page of your Wordpress instance
+to complete this part of the upgrade.
+
+Until you do this, your website might be broken and inaccessible. This is
+only required when you switched to a new major release (like 3.4 → 3.5)
+not when you installed a new minor version (like 3.5.1 → 3.5.2).
